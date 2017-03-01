@@ -25,6 +25,10 @@ import com.graphhopper.util.shapes.GHPoint3D;
  */
 public class GPXEntry extends GHPoint3D {
     private long time;
+    private double magvar;
+    private double speed;
+    private double accuracy;
+    private double bearing;
 
     public GPXEntry(GHPoint p, long millis) {
         this(p.lat, p.lon, millis);
@@ -38,6 +42,16 @@ public class GPXEntry extends GHPoint3D {
     public GPXEntry(double lat, double lon, double ele, long millis) {
         super(lat, lon, ele);
         this.time = millis;
+    }
+
+    public GPXEntry(double lat, double lon, double ele, long millis, double magvar, double speed,
+        double accuracy, double bearing) {
+        super(lat, lon, ele);
+        this.time = millis;
+        this.magvar = magvar;
+        this.speed = speed;
+        this.accuracy = accuracy;
+        this.bearing = bearing;
     }
 
     boolean is3D() {
@@ -55,22 +69,91 @@ public class GPXEntry extends GHPoint3D {
         this.time = time;
     }
 
-    @Override
-    public int hashCode() {
-        return 59 * super.hashCode() + (int) (time ^ (time >>> 32));
+    public double getMagvar() {
+      return magvar;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-
-        final GPXEntry other = (GPXEntry) obj;
-        return time == other.time && super.equals(obj);
+    public void setMagvar(double magvar) {
+      this.magvar = magvar;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + ", " + time;
+    public double getSpeed() {
+      return speed;
     }
+
+    public void setSpeed(double speed) {
+      this.speed = speed;
+    }
+
+    public double getAccuracy() {
+      return accuracy;
+    }
+
+  public void setAccuracy(double accuracy) {
+    this.accuracy = accuracy;
+  }
+
+  public double getBearing() {
+    return bearing;
+  }
+
+  public void setBearing(double bearing) {
+    this.bearing = bearing;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+
+    GPXEntry gpxEntry = (GPXEntry) o;
+
+    if (time != gpxEntry.time) {
+      return false;
+    }
+    if (Double.compare(gpxEntry.magvar, magvar) != 0) {
+      return false;
+    }
+    if (Double.compare(gpxEntry.speed, speed) != 0) {
+      return false;
+    }
+    if (Double.compare(gpxEntry.accuracy, accuracy) != 0) {
+      return false;
+    }
+    return Double.compare(gpxEntry.bearing, bearing) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    long temp;
+    result = 31 * result + (int) (time ^ (time >>> 32));
+    temp = Double.doubleToLongBits(magvar);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(speed);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(accuracy);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(bearing);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + ", " +
+        "time=" + time +
+        ", magvar=" + magvar +
+        ", speed=" + speed +
+        ", accuracy=" + accuracy +
+        ", bearing=" + bearing +
+        '}';
+  }
 }
